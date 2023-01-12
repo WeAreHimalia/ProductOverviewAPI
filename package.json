@@ -1,0 +1,26 @@
+{
+  "name": "productoverviewapi",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server/index.js",
+  "scripts": {
+    "test": "jest",
+    "server": "node server/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WeAreHimalia/ProductOverviewAPI.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/WeAreHimalia/ProductOverviewAPI/issues"
+  },
+  "homepage": "https://github.com/WeAreHimalia/ProductOverviewAPI#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "jest": "^29.3.1"
+  }
+}
