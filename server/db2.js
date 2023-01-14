@@ -39,11 +39,11 @@ const Feature = sequelize.define('features', {
   value: DataTypes.STRING
 })
 
-Product.belongsToMany(Feature, { through: 'ProductFeatures' });
-Feature.belongsToMany(Product, { through: 'ProductFeatures' });
+Product.belongsToMany(Feature, { through: 'product_features' });
+Feature.belongsToMany(Product, { through: 'product_features' });
 
 const Style = sequelize.define('styles', {
-  style_id: {
+  id: {
     type: DataTypes.INTEGER,
     primaryKey: true
   },
@@ -60,11 +60,11 @@ Product.hasMany(Style, {
 Style.belongsTo(Product);
 
 const Photo = sequelize.define('photos', {
-  photo_id: {
+  id: {
     type: DataTypes.INTEGER,
     primaryKey: true
   },
-  product_id: DataTypes.INTEGER,
+  style_id: DataTypes.INTEGER,
   thumbnail_url: DataTypes.STRING,
   url: DataTypes.STRING
 })
@@ -77,13 +77,13 @@ Photo.belongsTo(Style);
 Product.belongsToMany(Product, {
   as: 'product1',
   foreignKey: 'product1_id',
-  through: 'RelatedProducts'
+  through: 'related_products'
 });
 
 Product.belongsToMany(Product, {
   as: 'product2',
   foreignKey: 'product2_id',
-  through: 'RelatedProducts'
+  through: 'related_products'
 });
 
 sequelize.sync({ force: true }).then(() => {
