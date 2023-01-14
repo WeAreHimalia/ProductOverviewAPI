@@ -5,7 +5,7 @@
   "main": "server/index.js",
   "scripts": {
     "test": "jest",
-    "server": "node server/index.js"
+    "server": "nodemon server/index.js"
   },
   "repository": {
     "type": "git",
@@ -19,7 +19,10 @@
   "homepage": "https://github.com/WeAreHimalia/ProductOverviewAPI#readme",
   "dependencies": {
     "express": "^4.18.2",
-    "mongoose": "^6.8.3"
+    "mariadb": "^3.0.2",
+    "mongoose": "^6.8.3",
+    "nodemon": "^2.0.20",
+    "sequelize": "^6.28.0"
   },
   "devDependencies": {
     "jest": "^29.3.1"
