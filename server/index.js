@@ -8,6 +8,23 @@ app.get('/', (req, res) => {
   res.send('Hello World!');
 })
 
+app.get('/products', (req, res) => {
+  res.send('/products API route');
+})
+
+app.get('/products/::id', (req, res) => {
+  res.send('/products/::id API route');
+})
+
+app.get('/products/::id/styles', (req, res) => {
+  res.send('/products/::id/styles API route');
+})
+
+app.get('/products/::id/related', (req, res) => {
+  res.send('/products/::id/related API route');
+})
+
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 })
