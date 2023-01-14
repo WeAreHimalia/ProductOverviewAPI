@@ -1,6 +1,6 @@
 const { Sequelize, DataTypes } = require("sequelize");
 const sequelize = new Sequelize(
- 'svc',
+ 'sdc',
  'root',
  'California',
   {
@@ -26,8 +26,8 @@ const Product = sequelize.define("products", {
   description: DataTypes.STRING,
   category: DataTypes.STRING,
   default_price: DataTypes.STRING,
-  created_at: DataTypes.STRING,
-  updated_at: DataTypes.STRING,
+  created_at: DataTypes.DATE,
+  updated_at: DataTypes.DATE,
 });
 
 const Feature = sequelize.define('features', {
@@ -86,7 +86,7 @@ Product.belongsToMany(Product, {
   through: 'RelatedProducts'
 });
 
-sequelize.sync().then(() => {
+sequelize.sync({ force: true }).then(() => {
   console.log('Product table created successfully!');
 }).catch((error) => {
   console.error('Unable to create table : ', error);
