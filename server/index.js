@@ -12,16 +12,16 @@ app.get('/products', (req, res) => {
   res.send('/products API route');
 })
 
-app.get('/products/::id', (req, res) => {
-  res.send('/products/::id API route');
+app.get('/products/:id', (req, res) => {
+  res.send(`/products/:id API route for ${req.params.id}`);
 })
 
 app.get('/products/::id/styles', (req, res) => {
-  res.send('/products/::id/styles API route');
+  res.send(`/products/:id/styles API route for ${req.params.id}`);
 })
 
 app.get('/products/::id/related', (req, res) => {
-  res.send('/products/::id/related API route');
+  res.send(`/products/:id/related API route for ${req.params.id}`);
 })
 
 
