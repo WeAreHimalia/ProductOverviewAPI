@@ -42,7 +42,13 @@ const ProductsSchema = new Schema({
           thumbnail_url: String,
           url: String,
         }
-      ]
+      ],
+      skus: {
+        sku_id: {
+          quantity: Number,
+          size: String
+        }
+      }
     }
   ],
   related: [],

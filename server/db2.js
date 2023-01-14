@@ -102,6 +102,21 @@ Product.hasMany(Cart, {
 });
 Cart.belongsTo(Product);
 
+const Skus = sequelize.define('sku', {
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true
+  },
+  style_id: DataTypes.INTEGER,
+  size: DataTypes.STRING,
+  quantity: DataTypes.INTEGER
+})
+
+Style.hasMany(Skus, {
+  foreignKey: 'style_id'
+})
+Skus.belongsTo(Style);
+
 sequelize.sync({ force: true }).then(() => {
   console.log('Tables created successfully!');
 }).catch((error) => {
