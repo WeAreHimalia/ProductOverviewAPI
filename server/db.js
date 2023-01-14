@@ -45,7 +45,11 @@ const ProductsSchema = new Schema({
       ]
     }
   ],
-  related: []
+  related: [],
+  user_session: {
+    type: Number,
+    default: null
+  }
 })
 
 // Compile model from schema
