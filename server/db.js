@@ -11,11 +11,11 @@ const db = mongoose.connection;
 // Bind connection to error event (to get notification of connection errors)
 db.on("error", console.error.bind(console, "MongoDB connection error:"));
 
-// Define a schema
+// Define schemas and models
 const Schema = mongoose.Schema;
 
 const ProductsSchema = new Schema({
-  id: Number,
+  product_id: Number,
   campus: String,
   name: String,
   slogan: String,
@@ -26,6 +26,7 @@ const ProductsSchema = new Schema({
   updated_at: Date,
   features: [
     {
+      feature_id: Number,
       feature: String,
       value: String
     }
@@ -51,14 +52,21 @@ const ProductsSchema = new Schema({
       }
     }
   ],
-  related: [],
-  user_session: {
-    type: Number,
-    default: null
-  }
+  related: []
 })
 
-// Compile model from schema
-const Products = mongoose.model("Products", ProductsSchema);
+const Product = mongoose.model("Products", ProductsSchema);
 
-module.exports = Products;
+const CartSchema = new Schema({
+  id: Number,
+  user_session: Number,
+  product_id: Number,
+  active: Boolean
+})
+
+const CartItem = mongoose.model('Cart', CartSchema, 'cart');
+
+module.exports = {
+  Product,
+  CartItem
+};
