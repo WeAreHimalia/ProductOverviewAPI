@@ -1,13 +1,101 @@
 const express = require('express');
-const db = require('./db.js');
+const { Cart, Product } = require('./db.js');
 // const db2 = require('./db2.js');
 const app = express();
 const port = 3030;
+
+var bodyParser = require('body-parser')
+app.use( bodyParser.json() );       // to support JSON-encoded bodies
+app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
+  extended: true
+}));
 
 app.get('/', (req, res) => {
   res.send('Hello World!');
 })
 
+app.get('/products', (req, res) => {
+  Product.find({})
+  .then((data) => {
+    res.send(data);
+  })
+})
+
+app.get('/products/:id', (req, res) => {
+  Product.findOne({product_id: req.params.id}).lean()
+  .then((data) => {
+    data.id = data.product_id;
+    res.send(data);
+  })
+})
+
+app.get('/products/:id/styles', (req, res) => {
+  Product.findOne({product_id: req.params.id}).lean()
+  .then((data) => {
+    var id_string = data.product_id.toString();
+    data.product_id = id_string;
+    if (data.results.length === 0) {
+      data.results.push(
+        {
+          "style_id": 999999999,
+          "name": "Aaron",
+          "original_price": "999",
+          "sale_price": null,
+          "default?": true,
+          "photos": [
+              {
+                  "thumbnail_url": "https://ca.slack-edge.com/T5B2RG0JW-U03P8D7RN6S-0c1ef7a3f508-512",
+                  "url": "https://ca.slack-edge.com/T5B2RG0JW-U03P8D7RN6S-0c1ef7a3f508-512",
+              }
+          ],
+          "skus": {
+              "999999999": {
+                  "size": "Xtra M",
+                  "quantity": 999
+              }
+          }
+        }
+      )
+    }
+    res.send(data);
+  })
+})
+
+app.get('/products/:id/related', (req, res) => {
+  Product.findOne({product_id: req.params.id}).lean()
+  .then((data) => {
+    res.send(data.related);
+  })
+})
+
+app.get('/cart', (req, res) => {
+  Cart.find({}).lean()
+  .then((data) => {
+    res.send(data);
+  })
+})
+
+app.post('/cart', (req, res) => {
+  var sku = req.body.sku_id;
+  Cart.findOneAndUpdate({
+    sku_id: sku
+  }, {
+    $inc: {
+      count: 1
+    }
+  }, { upsert: true })
+  .then((data) => {
+    res.send(data);
+  })
+})
+
+app.delete('/cart', (req, res) => {
+  Cart.deleteMany({})
+  .then((data) => {
+    res.send(data);
+  })
+})
+
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
+  console.log(`App listening on port ${port}`);
 })

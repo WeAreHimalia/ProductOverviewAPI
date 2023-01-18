@@ -37,19 +37,14 @@ const ProductsSchema = new Schema({
       name: String,
       original_price: String,
       sale_price: String,
-      default: Boolean,
+      'default?': Boolean,
       photos: [
         {
           thumbnail_url: String,
           url: String,
         }
       ],
-      skus: {
-        sku_id: {
-          quantity: Number,
-          size: String
-        }
-      }
+      skus: {}
     }
   ],
   related: []
@@ -58,15 +53,13 @@ const ProductsSchema = new Schema({
 const Product = mongoose.model("Products", ProductsSchema);
 
 const CartSchema = new Schema({
-  id: Number,
-  user_session: Number,
-  product_id: Number,
-  active: Boolean
+  sku_id: Number,
+  count: Number
 })
 
-const CartItem = mongoose.model('Cart', CartSchema, 'cart');
+const Cart = mongoose.model('Cart', CartSchema, 'cart');
 
 module.exports = {
   Product,
-  CartItem
+  Cart
 };
