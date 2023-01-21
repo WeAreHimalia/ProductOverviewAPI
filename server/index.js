@@ -10,16 +10,6 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   extended: true
 }));
 
-app.get('/products', (req, res) => {
-  Product.find({}).lean()
-  .then((data) => {
-    res.status(200).send(data);
-  })
-  .catch((err) => {
-    res.status(500).send(`${err}`);
-  });
-});
-
 app.get('/products/:id', (req, res) => {
   Product.findOne({product_id: req.params.id}).lean()
   .then((data) => {
@@ -88,19 +78,20 @@ app.get('/cart', (req, res) => {
 
 app.post('/cart', (req, res) => {
   var sku = req.body.sku_id;
-  Cart.findOneAndUpdate({
-    sku_id: sku
-  }, {
-    $inc: {
-      count: 1
-    }
-  }, { upsert: true })
-  .then((data) => {
-    res.status(201).send();
-  })
-  .catch((err) => {
-    res.status(500).send(`${err}`);
-  });
+  if (!sku) {
+    res.status(500).send('Error: Items added to cart need a SKU number.')
+  } else {
+    Cart.findOneAndUpdate({
+      sku_id: sku
+    }, {
+      $inc: {
+        count: 1
+      }
+    }, { upsert: true })
+    .then((data) => {
+      res.status(201).send();
+    })
+  }
 });
 
 app.delete('/cart', (req, res) => {

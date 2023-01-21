@@ -20,8 +20,10 @@ describe('GET /products/id', () => {
   });
 });
 
+/******************** PRODUCTS ********************/
+
 describe('GET /products/id', () => {
-  it('should return the product of the requested product_id', async () => {
+  it('should return the correct statusCode and data for the requested product_id', async () => {
     const res = await request(server).get('/products/1');
     expect(res.statusCode).toBe(200);
     expect(res.body.product_id).toBe(1);
@@ -30,8 +32,26 @@ describe('GET /products/id', () => {
   });
 });
 
+describe('GET /products/id TypeError', () => {
+  it('should return the correct statusCode and error message for a product that does not exist', async () => {
+    const res = await request(server).get('/products/0');
+    expect(res.statusCode).toBe(500);
+    expect(res.text).toBe(`TypeError: Cannot read properties of null (reading 'product_id')`);
+  });
+});
+
+describe('GET /products/id CastError ', () => {
+  it('should return the correct statusCode and error message for an incorrect data type', async () => {
+    const res = await request(server).get('/products/asdf');
+    expect(res.statusCode).toBe(500);
+    expect(res.text).toBe(`CastError: Cast to Number failed for value "asdf" (type string) at path "product_id" for model "Products"`);
+  });
+});
+
+/******************** STYLES ********************/
+
 describe('GET /products/id/styles', () => {
-  it('should return the styles of the requested product_id', async () => {
+  it('should return the correct statusCode and data for the requested product_id', async () => {
     const res = await request(server).get('/products/1/styles');
     expect(res.body.results.length).toBe(6);
     expect(res.body.results[0].style_id).toBe(1);
@@ -40,9 +60,82 @@ describe('GET /products/id/styles', () => {
   });
 });
 
+describe('GET /products/id/styles TypeError', () => {
+  it('should return the correct statusCode and error message for a product that does not exist', async () => {
+    const res = await request(server).get('/products/0/styles');
+    expect(res.statusCode).toBe(500);
+    expect(res.text).toBe(`TypeError: Cannot read properties of null (reading 'product_id')`);
+  });
+});
+
+describe('GET /products/id/styles CastError ', () => {
+  it('should return the correct statusCode and error message for an incorrect data type', async () => {
+    const res = await request(server).get('/products/asdf/styles');
+    expect(res.statusCode).toBe(500);
+    expect(res.text).toBe(`CastError: Cast to Number failed for value "asdf" (type string) at path "product_id" for model "Products"`);
+  });
+});
+
+/******************** RELATED ********************/
+
 describe('GET /products/id/related', () => {
-  it('should return the related products of the requested product_id', async () => {
+  it('should return the correct statusCode and related products data for the requested product_id', async () => {
     const res = await request(server).get('/products/1/related');
     expect(res.body).toEqual([2, 3, 8, 7]);
+  });
+});
+
+describe('GET /products/id/related TypeError', () => {
+  it('should return the correct statusCode and error message for a product that does not exist', async () => {
+    const res = await request(server).get('/products/0/related');
+    expect(res.statusCode).toBe(500);
+    expect(res.text).toBe(`TypeError: Cannot read properties of null (reading 'related')`);
+  });
+});
+
+describe('GET /products/id/related CastError ', () => {
+  it('should return the correct statusCode and error message for an incorrect data type', async () => {
+    const res = await request(server).get('/products/asdf/related');
+    expect(res.statusCode).toBe(500);
+    expect(res.text).toBe(`CastError: Cast to Number failed for value "asdf" (type string) at path "product_id" for model "Products"`);
+  });
+});
+
+/******************** CART ********************/
+
+describe('POST /cart', () => {
+  it('should return the correct statusCode and add item to cart database ', async () => {
+    var cartItem = {
+      sku_id: 12345,
+      count: 1
+    }
+    const res = await request(server).post('/cart').send(cartItem);
+    expect(res.statusCode).toBe(201);
+  });
+});
+
+describe('POST /cart with incorrect data format', () => {
+  it('should return the correct statusCode and error message for an incorrect data format', async () => {
+    var cartItem = 'Incorrect data'
+    const res = await request(server).post('/cart').send(cartItem);
+    expect(res.statusCode).toBe(500);
+    expect(res.text).toBe(`Error: Items added to cart need a SKU number.`);
+  });
+});
+
+describe('GET /cart', () => {
+  it('should return the correct statusCode and data for the requested product_id', async () => {
+    const res = await request(server).get('/cart');
+    expect(res.statusCode).toBe(200);
+    expect(res.body[res.body.length - 1].sku_id).toBe(12345);
+  });
+});
+
+describe('DELETE /cart', () => {
+  it('should delete all items from the cart collection', async () => {
+    const delRes = await request(server).delete('/cart');
+    expect(delRes.statusCode).toBe(200);
+    const newRes = await request(server).get('/cart');
+    expect(newRes.body.length).toBe(0);
   });
 });
