@@ -11,7 +11,7 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 }));
 
 app.get('/products', (req, res) => {
-  Product.find({})
+  Product.find({}).lean()
   .then((data) => {
     res.status(200).send(data);
   })
@@ -116,5 +116,6 @@ app.delete('/cart', (req, res) => {
 const server = app.listen(port, () => {
   console.log(`App listening on port ${port}`);
 })
+
 
 module.exports = { server };
