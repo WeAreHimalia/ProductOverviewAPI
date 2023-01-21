@@ -1,8 +1,9 @@
 const { Sequelize, DataTypes } = require("sequelize");
+require('dotenv').config();
 const sequelize = new Sequelize(
  'sdc',
  'root',
- 'California',
+ process.env.DB_PASSWORD,
   {
     host: '127.0.0.1',
     dialect: 'mariadb'
@@ -86,8 +87,38 @@ Product.belongsToMany(Product, {
   through: 'related_products'
 });
 
+const Cart = sequelize.define('cart', {
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true
+  },
+  user_session: DataTypes.INTEGER,
+  product_id: DataTypes.INTEGER,
+  active: DataTypes.BOOLEAN
+}, { tableName: 'cart' })
+
+Product.hasMany(Cart, {
+  foreignKey: 'product_id'
+});
+Cart.belongsTo(Product);
+
+const Skus = sequelize.define('sku', {
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true
+  },
+  style_id: DataTypes.INTEGER,
+  size: DataTypes.STRING,
+  quantity: DataTypes.INTEGER
+})
+
+Style.hasMany(Skus, {
+  foreignKey: 'style_id'
+})
+Skus.belongsTo(Style);
+
 sequelize.sync({ force: true }).then(() => {
-  console.log('Product table created successfully!');
+  console.log('Tables created successfully!');
 }).catch((error) => {
   console.error('Unable to create table : ', error);
 });
