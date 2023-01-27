@@ -54,8 +54,14 @@ const ProductsSchema = new Schema({
 const Product = mongoose.model("Products", ProductsSchema);
 
 const CartSchema = new Schema({
-  sku_id: Number,
-  count: Number
+  sku_id: {
+    type: Number,
+    required: true
+  },
+  count: {
+    type: Number,
+    required: true
+  }
 })
 
 const Cart = mongoose.model('Cart', CartSchema, 'cart');

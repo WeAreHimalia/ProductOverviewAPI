@@ -10,24 +10,16 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   extended: true
 }));
 
-app.get('/', (req, res) => {
-  res.send('Hello World!');
-})
-
-app.get('/products', (req, res) => {
-  Product.find({})
-  .then((data) => {
-    res.send(data);
-  })
-})
-
 app.get('/products/:id', (req, res) => {
   Product.findOne({product_id: req.params.id}).lean()
   .then((data) => {
     data.id = data.product_id;
-    res.send(data);
+    res.status(200).send(data);
   })
-})
+  .catch((err) => {
+    res.status(500).send(`${err}`);
+  });
+});
 
 app.get('/products/:id/styles', (req, res) => {
   Product.findOne({product_id: req.params.id}).lean()
@@ -57,45 +49,64 @@ app.get('/products/:id/styles', (req, res) => {
         }
       )
     }
-    res.send(data);
+    res.status(200).send(data);
   })
-})
+  .catch((err) => {
+    res.status(500).send(`${err}`);
+  });
+});
 
 app.get('/products/:id/related', (req, res) => {
   Product.findOne({product_id: req.params.id}).lean()
   .then((data) => {
-    res.send(data.related);
+    res.status(200).send(data.related);
   })
-})
+  .catch((err) => {
+    res.status(500).send(`${err}`);
+  });
+});
 
 app.get('/cart', (req, res) => {
   Cart.find({}).lean()
   .then((data) => {
-    res.send(data);
+    res.status(200).send(data);
   })
-})
+  .catch((err) => {
+    res.status(500).send(`${err}`);
+  });
+});
 
 app.post('/cart', (req, res) => {
   var sku = req.body.sku_id;
-  Cart.findOneAndUpdate({
-    sku_id: sku
-  }, {
-    $inc: {
-      count: 1
-    }
-  }, { upsert: true })
-  .then((data) => {
-    res.send(data);
-  })
-})
+  if (!sku) {
+    res.status(500).send('Error: Items added to cart need a SKU number.')
+  } else {
+    Cart.findOneAndUpdate({
+      sku_id: sku
+    }, {
+      $inc: {
+        count: 1
+      }
+    }, { upsert: true })
+    .then((data) => {
+      res.status(201).send();
+    })
+  }
+});
 
 app.delete('/cart', (req, res) => {
   Cart.deleteMany({})
   .then((data) => {
-    res.send(data);
+    res.status(200).send();
   })
+  .catch((err) => {
+    res.status(500).send(`${err}`);
+  });
 })
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
   console.log(`App listening on port ${port}`);
 })
+
+
+module.exports = { server };
