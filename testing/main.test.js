@@ -3,11 +3,6 @@ const mongoose = require('mongoose');
 const request = require('supertest');
 
 
-beforeAll( async () => {
-  const mongoDB = "mongodb://127.0.0.1/sdc";
-  await mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true });
-})
-
 afterAll( async () => {
   server.close();
   await mongoose.connection.close();
@@ -139,7 +134,7 @@ describe('GET /cart', () => {
   });
 });
 
-describe('GET /cart/sdfd', () => {
+describe('GET /cart', () => {
   it('should return the correct statusCode and data for the requested product_id', async () => {
     const res = await request(server).get('/cart');
     expect(res.statusCode).toBe(200);
