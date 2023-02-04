@@ -1,42 +1,62 @@
 import http from 'k6/http';
 import { check, sleep } from 'k6';
 
-const getScenarioOptions = (funcName) => {
+var testLength = .5
+
+const getStartTimeString = (multiplier) => {
+  var waitTime = testLength * multiplier;
+  var str = '';
+  str += Math.floor(waitTime) + 'm';
+  var sec = (waitTime - Math.floor(waitTime)) * 60;
+  str += sec + 's';
+  return str;
+}
+
+const getScenarioOptions = (funcName, startTime) => {
   var options = {
-    executor: 'ramping-arrival-rate',
-    startTime: '1s', // the ramping API test starts a little later
-    startRate: 50,
-    timeUnit: '1s', // we start at 50 iterations per second
-    stages: [
-      { target: 100, duration: '30s' }, // go from 50 to 200 iters/s in the first 30 seconds
-      { target: 100, duration: '3m30s' }, // hold at 200 iters/s for 3.5 minutes
-      { target: 0, duration: '30s' }, // ramp down back to 0 iters/s over the last 30 second
-    ],
-    preAllocatedVUs: 300, // how large the initial pool of VUs would be
-    maxVUs: 600, // if the preAllocatedVUs are not enough, we can initialize more
-    tags: { test_type: 'api' }, // different extra metric tags for this scenario
+    executor: 'constant-arrival-rate',
+    duration: '30s',
+    rate: 1100,
+    timeUnit: '1s',
+    preAllocatedVUs: 1,
+    maxVUs: 20000,
     exec: funcName, // same function as the scenario above, but with different env vars
+    startTime: startTime
   }
   return options;
 }
 
 export const options = {
   scenarios: {
-    api_product: getScenarioOptions('productAPI'),
-    api_styles: getScenarioOptions('stylesAPI'),
-    api_related: getScenarioOptions('relatedAPI'),
-    api_cart_get: getScenarioOptions('cartAPI_GET'),
-    api_cart_post: getScenarioOptions('cartAPI_POST'),
-    api_cart_delete: getScenarioOptions('cartAPI_DELETE')
+    api_product: getScenarioOptions('productAPI', getStartTimeString(0)),
+    api_styles: getScenarioOptions('stylesAPI', getStartTimeString(1)),
+    api_related: getScenarioOptions('relatedAPI', getStartTimeString(2)),
+    api_cart_get: getScenarioOptions('cartAPI_GET', getStartTimeString(3)),
+    api_cart_post: getScenarioOptions('cartAPI_POST', getStartTimeString(4)),
+    api_cart_delete: getScenarioOptions('cartAPI_DELETE', getStartTimeString(5))
   },
+  summaryTrendStats: ['avg', 'min', 'med', 'max', 'p(90)', 'p(95)', 'p(99)', 'count'],
   thresholds: {
     'http_req_failed': ['rate<0.01'],
-    'http_req_duration': ['p(99)<2000'] // 99% of requests must complete below 1.5s
+    'http_req_duration': ['p(99)<2000']
   },
 };
 
 var id = 1000011
 const BASE_URL = 'http://localhost:3030';
+
+for (let key in options.scenarios) {
+  // Each scenario automaticall tags the metrics it generates with its own name
+  let reqDurationName = `http_req_duration{scenario:${key}}`;
+  let reqFailedName = `http_req_failed{scenario:${key}}`;
+  // Check to prevent us from overwriting a threshold that already exists
+  if (!options.thresholds[reqDurationName]) {
+      options.thresholds[reqDurationName] = [];
+  }
+  if (!options.thresholds[reqFailedName]) {
+    options.thresholds[reqFailedName] = [];
+  }
+}
 
 export function productAPI() {
 
