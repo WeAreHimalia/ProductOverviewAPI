@@ -5,7 +5,8 @@
   "main": "server/index.js",
   "scripts": {
     "test": "jest",
-    "server": "node server/index.js"
+    "test-coverage": "jest --coverage --collectCoverageFrom='server/index.js'",
+    "server": "nodemon server/index.js"
   },
   "repository": {
     "type": "git",
@@ -18,8 +19,16 @@
   },
   "homepage": "https://github.com/WeAreHimalia/ProductOverviewAPI#readme",
   "dependencies": {
+    "@moebius/http-graceful-shutdown": "^1.1.0",
+    "body-parser": "^1.20.1",
+    "csvtojson": "^2.0.10",
+    "dotenv": "^16.0.3",
     "express": "^4.18.2",
-    "mongoose": "^6.8.3"
+    "mariadb": "^3.0.2",
+    "mongoose": "^6.8.3",
+    "nodemon": "^2.0.20",
+    "sequelize": "^6.28.0",
+    "supertest": "^6.3.3"
   },
   "devDependencies": {
     "jest": "^29.3.1"
