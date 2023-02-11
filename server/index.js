@@ -1,8 +1,6 @@
 const express = require('express');
 const { Cart, Product } = require('./db.js');
 // const db2 = require('./db2.js');
-const { Cart, Product } = require('./db.js');
-// const db2 = require('./db2.js');
 const app = express();
 const port = 3030;
 
