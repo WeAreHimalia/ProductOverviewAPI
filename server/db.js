@@ -3,7 +3,7 @@ require('dotenv').config();
 const mongoose = require("mongoose");
 
 // Set up default mongoose connection
-const mongoDB = `mongodb://127.0.0.1/sdc`;
+const mongoDB = `mongodb://44.200.32.91:27017/sdc`;
 mongoose.connect(mongoDB, { authSource: "admin", user: "admin", pass: process.env.DB_PASSWORD, useNewUrlParser: true, useUnifiedTopology: true });
 
 // Get the default connection
