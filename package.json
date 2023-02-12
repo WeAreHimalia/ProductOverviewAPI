@@ -6,7 +6,9 @@
   "scripts": {
     "test": "jest",
     "test-coverage": "jest --coverage --collectCoverageFrom='server/index.js'",
-    "server": "nodemon server/index.js"
+    "server": "nodemon server/index.js",
+    "start": "pm2 start server/index.js",
+    "stop": "pm2 stop server/index.js"
   },
   "repository": {
     "type": "git",
