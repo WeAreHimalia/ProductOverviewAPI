@@ -10,6 +10,10 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 
+app.get('/loaderio*', (req, res) => {
+  res.status(200).download('./loaderio-1548c83dbce6aa2e9ca38e6f6e263679.txt')
+})
+
 app.get('/products/:id', (req, res) => {
   Product.findOne({product_id: req.params.id}).lean()
   .then((data) => {
