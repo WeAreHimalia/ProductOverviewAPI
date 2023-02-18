@@ -11,7 +11,7 @@ app.use(bodyParser.urlencoded({
 }));
 
 app.get('/loaderio*', (req, res) => {
-  res.status(200).download('./loaderio-000c030e4afab49efcc48d99e9c8a735.txt')
+  res.status(200).download('./loaderio-3f165e0cb21dd4aad78b205215a27ae0.txt')
 })
 
 app.get('/products/:id', (req, res) => {
