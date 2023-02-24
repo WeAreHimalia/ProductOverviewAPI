@@ -2,7 +2,7 @@ const express = require('express');
 const { Cart, Product } = require('./db.js');
 // const db2 = require('./db2.js');
 const app = express();
-const port = 3030;
+const port = process.argv[2] || 3030;
 
 var bodyParser = require('body-parser')
 app.use(bodyParser.json());
@@ -10,6 +10,7 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 
+console.log('Cart: ', Cart)
 app.get('/loaderio*', (req, res) => {
   res.status(200).download('./loaderio-3f165e0cb21dd4aad78b205215a27ae0.txt')
 })
@@ -18,9 +19,9 @@ app.get('/products/:id', (req, res) => {
   Product.findOne({product_id: req.params.id}).lean()
   .then((data) => {
     data.id = data.product_id;
-    res.status(200).send(data);
   })
   .catch((err) => {
+    res.  status(200).send(data);
     res.status(500).send(`${err}`);
   });
 });
