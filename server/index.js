@@ -19,9 +19,9 @@ app.get('/products/:id', (req, res) => {
   Product.findOne({product_id: req.params.id}).lean()
   .then((data) => {
     data.id = data.product_id;
+    res.status(200).send(data);
   })
   .catch((err) => {
-    res.  status(200).send(data);
     res.status(500).send(`${err}`);
   });
 });
